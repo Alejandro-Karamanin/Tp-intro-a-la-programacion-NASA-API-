@@ -12,9 +12,9 @@ def index_page(request):
 
 # auxiliar: retorna 2 listados -> uno de las imágenes de la API y otro de los favoritos del usuario.
 ##Estoy pensando si no corresponderia hacer un if (si la lista de favoritos esta vacia devuelve "images" si la lista de favoritos si esta completa devolvera la misma, primero me gustaria ver si anda incluso devolviendo la lista vacia de favoritos)
-## investigar bien que seria el "request" entiendo que la funcion que devuelve "images" esta en service nasa, pero no estoy seguro de como armarlo
+##incalculable la cantidad de tiempo que estuve sin darme cuenta de que en "getAllImages" no tenia que agregar el parametro "request"
 def getAllImagesAndFavouriteList(request):
-    images = services_nasa_image_gallery.getAllImages(input=None)
+    images = services_nasa_image_gallery.getAllImages()
     favourite_list = []
 
     return images, favourite_list
@@ -25,8 +25,8 @@ def home(request):
     # (*) este último, solo si se desarrolló el opcional de favoritos; caso contrario, será un listado vacío [].
     images = []
     favourite_list = []
+    images, favourite_list = getAllImagesAndFavouriteList(request)
     return render(request, 'home.html', {'images': images, 'favourite_list': favourite_list} )
-
 
 # función utilizada en el buscador.
 def search(request):

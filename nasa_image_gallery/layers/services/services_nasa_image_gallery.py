@@ -6,23 +6,17 @@ from ..generic import mapper
 from django.contrib.auth import get_user
 
 
-#Cuando se desarrolle el buscador agregar un input y un if que indique si hay input y el input es diferente a espacio (" "), esto es porque el buscador por default si no hay input usa espacio
+##Cuando se desarrolle el buscador agregar un input y un if que indique si hay input y el input es diferente a espacio (" "), esto es porque el buscador por default si no hay input usa espacio
 # ¡OJO! el parámetro 'input' indica si se debe buscar por un valor introducido en el buscador.
-##habia una funcion de transport que tenia el mismo nombre que la funcion en service, cambie una letra de la funcion de services paso de ser "getAllImages" a "getAllImage"
 def getAllImages(input=None):
-    json_collection = []
     images = []
-    if input == None or " ":
-        json_collection = transport.getAllImages(input=None)  # obtiene un listado de imágenes desde transport.py y lo guarda en un json_collection.
-        #recorre el listado de objetos JSON, lo transforma en una NASACard y lo agrega en el listado de images. Ayuda: ver mapper.py
-        for object in json_collection:
-            images.append(mapper.fromRequestIntoNASACard(object))                                               
-    else:
-        json_collection = getImagesBySearchInputLike(input)
-        for object in json_collection:
-            images.append(mapper.fromRequestIntoNASACard(object))
+    # obtiene un listado de imágenes desde transport.py y lo guarda en un json_collection.
+    json_collection = transport.getAllImages(input)  
+    #recorre el listado de objetos JSON, lo transforma en una NASACard y lo agrega en el listado de images. Ayuda: ver mapper.py
+    for object in json_collection:
+        imageToConvertIntoNasaCard = mapper.fromRequestIntoNASACard(object)
+        images.append(imageToConvertIntoNasaCard)  
     return images
-
 
 def getImagesBySearchInputLike(input):
     return getAllImages(input)
