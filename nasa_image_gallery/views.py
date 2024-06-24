@@ -11,7 +11,6 @@ def index_page(request):
     return render(request, 'index.html')
 
 # auxiliar: retorna 2 listados -> uno de las imágenes de la API y otro de los favoritos del usuario.
-##Estoy pensando si no corresponderia hacer un if (si la lista de favoritos esta vacia devuelve "images" si la lista de favoritos si esta completa devolvera la misma, primero me gustaria ver si anda incluso devolviendo la lista vacia de favoritos)
 ##incalculable la cantidad de tiempo que estuve sin darme cuenta de que en "getAllImages" no tenia que agregar el parametro "request"
 def getAllImagesAndFavouriteList(request):
     images = services_nasa_image_gallery.getAllImages()
@@ -29,13 +28,21 @@ def home(request):
     return render(request, 'home.html', {'images': images, 'favourite_list': favourite_list} )
 
 # función utilizada en el buscador.
+##La funcion toma el listado de todas las imagenes que devuelve la api de la nasa (como la galeria principal) , posteriormente revisa en dicho listado si la palabra del buscador (search_msg) estaba dentro de las imagenes que se remitieron usando la funcion "getSerchedImages" desde "service_nasa_image_gallery", finalmente muestra las imagenes solicitadas 
 def search(request):
+    images = []
+    favourite_list = []
     images, favourite_list = getAllImagesAndFavouriteList(request)
     search_msg = request.POST.get('query', '')
-
+    refresh = AplyRefresh(request,images, favourite_list)
+    selectedImages = services_nasa_image_gallery.getSerchedImages(request,refresh, search_msg, images, favourite_list) 
+    
+    return render(request, 'home.html', {'images': selectedImages, 'favourite_list': favourite_list} )
     # si el usuario no ingresó texto alguno, debe refrescar la página; caso contrario, debe filtrar aquellas imágenes que posean el texto de búsqueda.
-    pass
 
+## Es una funcion para que recargue la pagina, funciona junto a search y getSerchedImages. 
+def AplyRefresh(request,images,favourite_list):
+    return render(request, 'home.html', {'images':images, 'favourite_list': favourite_list})
 
 # las siguientes funciones se utilizan para implementar la sección de favoritos: traer los favoritos de un usuario, guardarlos, eliminarlos y desloguearse de la app.
 @login_required
