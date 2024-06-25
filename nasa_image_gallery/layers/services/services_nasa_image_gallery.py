@@ -18,35 +18,43 @@ def getAllImages(input=None):
         images.append(imageToConvertIntoNasaCard)  
     return images
 
-def getImagesBySearchInputLike(input):
-    return getAllImages(input)
+def getImagesBySearchInputLike(request, search_msg,images):
+    selectedImages = []
+    for NasaCard in images:
+        if search_msg.lower() in NasaCard.title.lower() or search_msg.lower() in NasaCard.description.lower(): 
+            selectedImages.append(NasaCard)
+    return selectedImages
 
 
 # añadir favoritos (usado desde el template 'home.html')
 def saveFavourite(request):
-    fav = '' # transformamos un request del template en una NASACard.
-    fav.user = '' # le seteamos el usuario correspondiente.
-
-    return repositories.saveFavourite(fav) # lo guardamos en la base.
-
+    if request.method == 'POST':
+            fav = mapper.fromTemplateIntoNASACard(request)
+            if fav:
+                fav.user = request.user
+                return repositories.saveFavourite(fav)
+    return None
 
 # usados en el template 'favourites.html'
 def getAllFavouritesByUser(request):
-    if not request.user.is_authenticated:
-        return []
-    else:
+    if request.user.is_authenticated:
         user = get_user(request)
-
-        favourite_list = [] # buscamos desde el repositorio TODOS los favoritos del usuario (variable 'user').
+        favourite_list = repositories.getAllFavouritesByUser(user) # buscamos desde el repositorio TODOS los favoritos del usuario (variable 'user').
         mapped_favourites = []
 
         for favourite in favourite_list:
-            nasa_card = '' # transformamos cada favorito en una NASACard, y lo almacenamos en nasa_card.
+            nasa_card = mapper.fromRepositoryIntoNASACard(favourite) # transformamos cada favorito en una NASACard, y lo almacenamos en nasa_card.
             mapped_favourites.append(nasa_card)
 
         return mapped_favourites
+    else:
+        return None
 
 
 def deleteFavourite(request):
-    favId = request.POST.get('id')
-    return repositories.deleteFavourite(favId) # borramos un favorito por su ID.
+    if request.method == 'POST':
+        favId = request.POST.get('id')
+        if favId:
+            return repositories.deleteFavourite(favId) # borramos un favorito por su ID.)
+        return None
+        
