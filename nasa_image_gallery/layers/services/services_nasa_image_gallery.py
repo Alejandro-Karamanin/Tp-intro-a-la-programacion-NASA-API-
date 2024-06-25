@@ -6,7 +6,8 @@ from ..generic import mapper
 from django.contrib.auth import get_user
 
 
-##Cuando se desarrolle el buscador agregar un input y un if que indique si hay input y el input es diferente a espacio (" "), esto es porque el buscador por default si no hay input usa espacio
+
+
 # ¡OJO! el parámetro 'input' indica si se debe buscar por un valor introducido en el buscador.
 def getAllImages(input=None):
     images = []
@@ -18,13 +19,12 @@ def getAllImages(input=None):
         images.append(imageToConvertIntoNasaCard)  
     return images
 
-def getImagesBySearchInputLike(request, search_msg,images):
+def getImagesBySearchInputLike(input):
     selectedImages = []
     for NasaCard in images:
         if search_msg.lower() in NasaCard.title.lower() or search_msg.lower() in NasaCard.description.lower(): 
             selectedImages.append(NasaCard)
     return selectedImages
-
 
 # añadir favoritos (usado desde el template 'home.html')
 def saveFavourite(request):

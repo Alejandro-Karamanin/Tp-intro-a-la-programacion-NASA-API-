@@ -11,7 +11,6 @@ def index_page(request):
     return render(request, 'index.html')
 
 # auxiliar: retorna 2 listados -> uno de las imágenes de la API y otro de los favoritos del usuario.
-##Estoy pensando si no corresponderia hacer un if (si la lista de favoritos esta vacia devuelve "images" si la lista de favoritos si esta completa devolvera la misma, primero me gustaria ver si anda incluso devolviendo la lista vacia de favoritos)
 ##incalculable la cantidad de tiempo que estuve sin darme cuenta de que en "getAllImages" no tenia que agregar el parametro "request"
 def getAllImagesAndFavouriteList(request):
     images = services_nasa_image_gallery.getAllImages()
