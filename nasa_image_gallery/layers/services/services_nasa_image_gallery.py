@@ -19,7 +19,7 @@ def getAllImages(input=None):
         images.append(imageToConvertIntoNasaCard)  
     return images
 
-def getImagesBySearchInputLike(input):
+def getImagesBySearchInputLike(request, search_msg, images):
     selectedImages = []
     for NasaCard in images:
         if search_msg.lower() in NasaCard.title.lower() or search_msg.lower() in NasaCard.description.lower(): 
